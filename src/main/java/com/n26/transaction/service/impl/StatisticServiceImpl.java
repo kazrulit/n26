@@ -59,7 +59,12 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
             statistic.setCount(count);
         } else {
             double amount = transactionBean.getAmount();
-            statistics.put(transactionSecond, new StatisticBean(amount, amount, amount, 1, currentDate));
+            StatisticBean statisticBean = statistics.get(transactionSecond);
+            statisticBean.setMax(amount);
+            statisticBean.setMin(amount);
+            statisticBean.setSum(amount);
+            statisticBean.setCount(1);
+            statisticBean.setLastAddedTime(currentDate);
         }
 
 
