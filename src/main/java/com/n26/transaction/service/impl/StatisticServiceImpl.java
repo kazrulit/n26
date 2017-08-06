@@ -45,9 +45,8 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         return statistic;
     }
 
-    private StatisticBean initStatisticData(int transactionSecond, TransactionBean transactionBean) {
+    private StatisticBean initStatisticData(StatisticBean statisticBean, TransactionBean transactionBean) {
         double amount = transactionBean.getAmount();
-        StatisticBean statisticBean = statistics.get(transactionSecond);
         statisticBean.setMax(amount);
         statisticBean.setMin(amount);
         statisticBean.setSum(amount);
@@ -74,7 +73,7 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         if (diff <= TRANSACTION_SECONDS) {
             updateStatisticData(statisticBean, transactionBean);
         } else {
-            initStatisticData(transactionSecond, transactionBean);
+            initStatisticData(statisticBean, transactionBean);
         }
     }
 
