@@ -21,7 +21,7 @@ public class StatisticServiceImplTest {
     private StatisticService<StatisticBean, TransactionBean> statisticService;
 
     @Test
-    public void test() {
+    public void shouldTestServiceAdding() {
         statisticService.add(new TransactionBean(10, new Timestamp(System.currentTimeMillis())));
         StatisticBean statisticBean = statisticService.getTotal();
         assertEquals(10, statisticBean.getSum(), TestConfig.DELTA);
