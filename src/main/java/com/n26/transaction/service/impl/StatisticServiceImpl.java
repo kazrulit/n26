@@ -23,8 +23,9 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
 
     @PostConstruct
     public void init() {
+        Double nan = Double.NaN;
         for (int i = 1; i < TRANSACTION_SECONDS; i++) {
-            statistics.put(i, new StatisticBean(0, 0, 0, 0, new Date(0)));
+            statistics.put(i, new StatisticBean(nan, nan, 0, 0, new Date(0)));
         }
     }
 
