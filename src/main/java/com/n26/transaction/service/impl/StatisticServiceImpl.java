@@ -33,6 +33,30 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         return (source.getTime() - dest.getTime()) / 1000;
     }
 
+    private StatisticBean updateStatisticData(StatisticBean statistic, TransactionBean transactionBean) {
+        double sum = statistic.getSum() + transactionBean.getAmount();
+        double min = Math.min(statistic.getMin(), transactionBean.getAmount());
+        double max = Math.max(statistic.getMax(), transactionBean.getAmount());
+        int count = statistic.getCount() + 1;
+        statistic.setSum(sum);
+        statistic.setMin(min);
+        statistic.setMax(max);
+        statistic.setCount(count);
+        return statistic;
+    }
+
+    private StatisticBean initStatisticData(int transactionSecond, TransactionBean transactionBean) {
+        double amount = transactionBean.getAmount();
+        StatisticBean statisticBean = statistics.get(transactionSecond);
+        statisticBean.setMax(amount);
+        statisticBean.setMin(amount);
+        statisticBean.setSum(amount);
+        statisticBean.setCount(1);
+        Date currentDate = new Date();
+        statisticBean.setLastAddedTime(currentDate);
+        return statisticBean;
+    }
+
     @Override
     public void add(TransactionBean transactionBean) {
         Date transactionTime = transactionBean.getTimestamp();
@@ -41,32 +65,17 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         calendar.setTime(transactionTime);
 
         int transactionSecond = calendar.get(Calendar.SECOND);
-        StatisticBean statistic = statistics.get(transactionSecond);
+        StatisticBean statisticBean = statistics.get(transactionSecond);
 
         Date currentDate = new Date();
-        long diff = getDateDiffInSeconds(currentDate, statistic.getLastAddedTime());
+        long diff = getDateDiffInSeconds(currentDate, statisticBean.getLastAddedTime());
 
 
         if (diff <= TRANSACTION_SECONDS) {
-            double sum = statistic.getSum() + transactionBean.getAmount();
-            double min = Math.min(statistic.getMin(), transactionBean.getAmount());
-            double max = Math.max(statistic.getMax(), transactionBean.getAmount());
-            int count = statistic.getCount() + 1;
-            statistic.setSum(sum);
-            statistic.setMin(min);
-            statistic.setMax(max);
-            statistic.setCount(count);
+            updateStatisticData(statisticBean, transactionBean);
         } else {
-            double amount = transactionBean.getAmount();
-            StatisticBean statisticBean = statistics.get(transactionSecond);
-            statisticBean.setMax(amount);
-            statisticBean.setMin(amount);
-            statisticBean.setSum(amount);
-            statisticBean.setCount(1);
-            statisticBean.setLastAddedTime(currentDate);
+            initStatisticData(transactionSecond, transactionBean);
         }
-
-
     }
 
     @Override
