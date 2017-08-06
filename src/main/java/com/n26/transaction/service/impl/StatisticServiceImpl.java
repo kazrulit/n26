@@ -30,8 +30,7 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
 
 
     private long getDateDiffInSeconds(Date source, Date dest) {
-        long diff = (source.getTime() - dest.getTime()) / 1000;
-        return diff;
+        return (source.getTime() - dest.getTime()) / 1000;
     }
 
     @Override
