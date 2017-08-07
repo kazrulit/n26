@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @Service
@@ -19,6 +21,8 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
      */
     private final static int TRANSACTION_SECONDS = 60;
     private Map<Integer, StatisticBean> statistics = new HashMap<>(TRANSACTION_SECONDS);
+
+    private Lock lock = new ReentrantLock();
 
 
     @PostConstruct
@@ -59,6 +63,7 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
 
     @Override
     public void add(TransactionBean transactionBean) {
+        lock.lock();
         Date transactionTime = transactionBean.getTimestamp();
 
         Calendar calendar = Calendar.getInstance();
@@ -76,10 +81,12 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         } else {
             initStatisticData(statisticBean, transactionBean);
         }
+        lock.unlock();
     }
 
     @Override
     public StatisticBean getTotal() {
+        lock.lock();
         StatisticBean totalStatistic = new StatisticBean();
         Date currentDate = new Date();
         Double fullAmount = 0.0;
@@ -113,6 +120,8 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         totalStatistic.setMin(minAmount);
         totalStatistic.setSum(fullAmount);
         totalStatistic.setCount(count);
+
+        lock.unlock();
 
         return totalStatistic;
     }
