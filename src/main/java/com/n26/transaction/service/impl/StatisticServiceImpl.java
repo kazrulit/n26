@@ -97,7 +97,8 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
         for (int i = 1; i < statistics.size(); i++) {
             StatisticBean statistic = statistics.get(i);
             Date date = statistic.getLastAddedTime();
-            long seconds = getDateDiffInSeconds(currentDate, date);
+
+            long seconds = getDateDiffInSeconds(currentDate, date) + (TRANSACTION_SECONDS - Math.abs((currentDate.getTime()/1000L) - i));
 
             if (seconds <= TRANSACTION_SECONDS) {
                 fullAmount += statistic.getSum();
