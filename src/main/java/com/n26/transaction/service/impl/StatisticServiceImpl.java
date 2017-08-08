@@ -100,7 +100,12 @@ public class StatisticServiceImpl implements StatisticService<StatisticBean, Tra
 
             long seconds = getDateDiffInSeconds(currentDate, date);
 
-            if (seconds <= TRANSACTION_SECONDS) {
+            if(seconds > TRANSACTION_SECONDS)
+                continue;
+
+            long totalDiffSeconds = seconds + (seconds - Math.abs(currentDate.getTime()/1000 - i));
+
+            if (totalDiffSeconds <= TRANSACTION_SECONDS) {
                 fullAmount += statistic.getSum();
 
                 if (maxAmount.isNaN()) {
